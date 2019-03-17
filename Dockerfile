@@ -1,11 +1,14 @@
 ARG nginx_version=1.14.0
 
+# 1.15.9 ?
+
 FROM nginx:${nginx_version} as build
 
 RUN apt-get update \
     && apt-get install -y --no-install-suggests \
        libluajit-5.1-dev libpam0g-dev zlib1g-dev libpcre3-dev \
        libexpat1-dev git curl build-essential \
+       libc-dev libxml2 libxslt-dev \
     && export NGINX_RAW_VERSION=$(echo $NGINX_VERSION | sed 's/-.*//g') \
     && curl -fSL https://nginx.org/download/nginx-$NGINX_RAW_VERSION.tar.gz -o nginx.tar.gz \
     && tar -zxC /usr/src -f nginx.tar.gz
