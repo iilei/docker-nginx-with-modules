@@ -1,15 +1,16 @@
-nginx_version ?= 1.15.9
+nginx_version ?= 1.14.2
 
 all:
-	flavors=$$(jq -er '.flavors[].name' flavors.json) && \
+	flavors=$$(yq -er '.flavors[].name' flavors.yaml) && \
 	for f in $$flavors; do make flavor=$$f image; done
 
 image:
-	modules=$$(jq -er '.flavors[] | select(.name == "$(flavor)") | .modules | join(",")' flavors.json) && \
-	configure_args=$$(jq -er '.flavors[] | select(.name == "$(flavor)") | .configure_args | join(" ")' flavors.json) && \
+	with_modules=$$(yq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+$$"; "i"))) | map(. |= "--with-" + .) | join(",")' flavors.yaml) && \
+	remote_modules=$$(yq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+:"; "i"))) | join(",")' flavors.yaml) && \
 	docker build -t nginx-$(flavor):$(nginx_version) \
 		--build-arg nginx_version=$(nginx_version) \
-		--build-arg configure_args="$$configure_args" \
-		--build-arg modules="$$modules" .
+		--build-arg with_modules="$$with_modules" \
+		--build-arg remote_modules="$$remote_modules" \
+		.
 
 .PHONY: all flavor
