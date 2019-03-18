@@ -25,6 +25,7 @@ flavors:
           - https://github.com/openresty/echo-nginx-module.git
     - name: bon
       modules:
-          - https://github.com/simplresty/ngx_devel_kit.git:a22dade
+          - http_sub_module
+          - https://github.com/simplresty/ngx_devel_kit.git:v0.3.0
           - https://github.com/openresty/set-misc-nginx-module.git:v0.32
-          - https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git
+          - https://github.com/openresty/headers-more-nginx-module.git:v0.33

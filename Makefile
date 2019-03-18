@@ -1,4 +1,4 @@
-nginx_version ?= 1.14.2
+nginx_version ?= 1.14.0
 
 all:
 	flavors=$$(yq -er '.flavors[].name' flavors.yaml) && \
