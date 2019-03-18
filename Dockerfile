@@ -30,7 +30,7 @@ RUN export NGINX_RAW_VERSION=$(echo $NGINX_VERSION | sed 's/-.*//g') \
         cd ..; \
         configure_args="${configure_args} --add-dynamic-module=./${dirname}"; \
     done; unset IFS \
-    && eval ./configure ${configure_args} --with-cc-opt="-DNGX_HTTP_HEADERS" \
+    && eval ./configure --with-compat ${configure_args} --with-cc-opt="-DNGX_HTTP_HEADERS" \
     && make modules \
     && mkdir /modules \
     && cp $(pwd)/objs/*.so /modules
@@ -38,11 +38,15 @@ RUN export NGINX_RAW_VERSION=$(echo $NGINX_VERSION | sed 's/-.*//g') \
 FROM nginx:${nginx_version}
 COPY --from=build /modules/* /etc/nginx/modules/
 
-# list all installed modules
-RUN 2>&1 ls -A /etc/nginx/modules/ | awk 'NF{ print $NF }'
+# insert line before first occurence of "\n.*{", referencing the non-debug variant of a module
+RUN for module in $(2>&1 ls -A /etc/nginx/modules/ | grep -v 'debug' | awk 'NF{ print $NF }'); do \
+        sed -i -r "0,/(.*)\{/s//load_module \"modules\/$module\";\n&/" /etc/nginx/nginx.conf; \
+    done;
 
-# TODO:
-# loop over the list and add
-# load_module "modules/<module name>";
-# to /etc/nginx/nginx.conf just before the first occurence of \n\S+\s*\{ (i.e.: "<LF>events {"
+# insert one blank line in between just to make it look nice
+RUN  sed -i -r "0,/(.*)\{/s//\n&/" /etc/nginx/nginx.conf;
+
+RUN cat /etc/nginx/nginx.conf
+
+RUN nginx -t
 
