@@ -1,12 +1,12 @@
 nginx_version ?= 1.14.0
 
 all:
-	flavors=$$(yq -er '.flavors[].name' flavors.yaml) && \
+	flavors=$$(jq -er '.flavors[].name' flavors.json) && \
 	for f in $$flavors; do make flavor=$$f image; done
 
 image:
-	with_modules=$$(yq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+$$"; "i"))) | map(. |= "--with-" + .) | join(",")' flavors.yaml) && \
-	remote_modules=$$(yq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+:"; "i"))) | join(",")' flavors.yaml) && \
+	with_modules=$$(jq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+$$"; "i"))) | map(. |= "--with-" + .) | join(",")' flavors.json) && \
+	remote_modules=$$(jq -er '.flavors[] | select(.name == "$(flavor)") | .modules | map(select(.|test("^[^:]+:"; "i"))) | join(",")' flavors.json) && \
 	docker build -t nginx-$(flavor):$(nginx_version) \
 		--build-arg nginx_version=$(nginx_version) \
 		--build-arg with_modules="$$with_modules" \

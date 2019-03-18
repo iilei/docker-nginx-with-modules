@@ -1,0 +1,45 @@
+{
+   "flavors": [
+      {
+         "name": "test",
+         "modules": [
+            "http_dav_module",
+            "https://github.com/arut/nginx-dav-ext-module.git"
+         ]
+      },
+      {
+         "name": "tsuru",
+         "modules": [
+            "http_dav_module",
+            "https://github.com/openresty/headers-more-nginx-module.git",
+            "https://github.com/sto/ngx_http_auth_pam_module.git",
+            "https://github.com/FRiCKLE/ngx_cache_purge.git",
+            "https://github.com/arut/nginx-dav-ext-module.git:v3.0.0",
+            "https://github.com/simplresty/ngx_devel_kit.git:a22dade",
+            "https://github.com/openresty/echo-nginx-module.git",
+            "https://github.com/wandenberg/nginx-push-stream-module.git",
+            "https://github.com/openresty/lua-nginx-module.git",
+            "https://github.com/masterzen/nginx-upload-progress-module.git",
+            "https://github.com/gnosek/nginx-upstream-fair.git",
+            "https://github.com/vozlt/nginx-module-vts.git",
+            "https://github.com/aperezdc/ngx-fancyindex.git",
+            "https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git"
+         ]
+      },
+      {
+         "name": "echo",
+         "modules": [
+            "https://github.com/openresty/echo-nginx-module.git"
+         ]
+      },
+      {
+         "name": "bon",
+         "modules": [
+            "http_sub_module",
+            "https://github.com/simplresty/ngx_devel_kit.git:v0.3.0",
+            "https://github.com/openresty/set-misc-nginx-module.git:v0.32",
+            "https://github.com/openresty/headers-more-nginx-module.git:v0.33"
+         ]
+      }
+   ]
+}
